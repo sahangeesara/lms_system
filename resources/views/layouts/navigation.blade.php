@@ -22,6 +22,16 @@
                         {{ __('Course') }}
                     </x-nav-link>
                 </div>
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('lesson')" :active="request()->routeIs('lesson')" class="text-sm font-semibold transition-all text-neutral-700 dark:text-neutral-300 hover:text-indigo-600 dark:hover:text-indigo-400 active:text-indigo-600 dark:active:text-indigo-400">
+                        {{ __('Lesson') }}
+                    </x-nav-link>
+                </div>
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('enrollment')" :active="request()->routeIs('enrollment')" class="text-sm font-semibold transition-all text-neutral-700 dark:text-neutral-300 hover:text-indigo-600 dark:hover:text-indigo-400 active:text-indigo-600 dark:active:text-indigo-400">
+                        {{ __('Enrollment') }}
+                    </x-nav-link>
+                </div>
             </div>
 
             <!-- Settings Dropdown -->
@@ -81,6 +91,16 @@
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('course')" :active="request()->routeIs('course')" class="font-semibold text-neutral-700 dark:text-neutral-300 active:text-indigo-600 dark:active:text-indigo-400">
                 {{ __('Course') }}
+            </x-responsive-nav-link>
+        </div>
+        <div class="pt-2 pb-3 space-y-1">
+            <x-responsive-nav-link :href="route('lesson')" :active="request()->routeIs('lesson')" class="font-semibold text-neutral-700 dark:text-neutral-300 active:text-indigo-600 dark:active:text-indigo-400">
+                {{ __('Lesson') }}
+            </x-responsive-nav-link>
+        </div>
+        <div class="pt-2 pb-3 space-y-1">
+            <x-responsive-nav-link :href="route('enrollment')" :active="request()->routeIs('enrollment')" class="font-semibold text-neutral-700 dark:text-neutral-300 active:text-indigo-600 dark:active:text-indigo-400">
+                {{ __('Enrollment') }}
             </x-responsive-nav-link>
         </div>
 
