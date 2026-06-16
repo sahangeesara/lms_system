@@ -89,13 +89,13 @@ Route::middleware(['auth', 'verified', 'role:admin'])
 // =========================================================================
 // ADDITIONAL ROLE SPECIFIC DASHBOARDS
 // =========================================================================
-Route::middleware(['auth', 'role:instructor'])->group(function () {
+Route::middleware(['auth', 'role_or:Instructor|admin'])->group(function () {
     Route::get('/instructor/dashboard', function () {
         return "Instructor Dashboard";
     });
 });
 
-Route::middleware(['auth', 'role:student'])
+Route::middleware(['auth', 'role_or:student|admin'])
     ->prefix('student')
     ->name('student.')
     ->group(function () {
