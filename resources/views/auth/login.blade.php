@@ -1,16 +1,16 @@
 <x-guest-layout>
-    <div class="min-h-screen flex flex-col items-center justify-center bg-[#FAF9F6] dark:bg-[#0A0A0A] px-4 sm:px-6 lg:px-8 transition-colors duration-300">
+    <div class="min-h-screen flex flex-col items-center justify-center bg-[#FAF9F6] px-4 sm:px-6 lg:px-8">
 
-        <div class="w-full max-w-md space-y-8 bg-white dark:bg-[#131313] p-8 rounded-2xl border border-neutral-200/60 dark:border-neutral-800/60 shadow-xl">
+        <div class="w-full max-w-md space-y-8 bg-white p-8 rounded-2xl border border-neutral-200/80 shadow-xl">
 
             <div class="text-center">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 text-3xl mb-4">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-indigo-50 text-3xl mb-4">
                     🎓
                 </div>
-                <h2 class="text-3xl font-extrabold tracking-tight text-neutral-900 dark:text-white">
+                <h2 class="text-3xl font-extrabold tracking-tight text-neutral-900">
                     Welcome Back
                 </h2>
-                <p class="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
+                <p class="mt-2 text-sm text-neutral-500">
                     Sign in to access your LMS dashboard and courses
                 </p>
             </div>
@@ -21,10 +21,10 @@
                 @csrf
 
                 <div class="space-y-1">
-                    <x-input-label for="email" :value="__('Email Address')" class="text-neutral-700 dark:text-neutral-300 font-medium" />
+                    <x-input-label for="email" :value="__('Email Address')" class="text-neutral-700 font-medium" />
                     <x-text-input
                         id="email"
-                        class="block mt-1 w-full bg-white text-black dark:bg-white dark:text-black border-neutral-300 dark:border-neutral-700 focus:border-indigo-500 focus:ring-indigo-500 rounded-xl px-4 py-3 text-sm transition-all shadow-sm"
+                        class="block mt-1 w-full bg-white text-black border-neutral-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-xl px-4 py-3 text-sm transition-all shadow-sm"
                         type="email"
                         name="email"
                         :value="old('email')"
@@ -38,10 +38,10 @@
 
                 <div class="space-y-1">
                     <div class="flex items-center justify-between">
-                        <x-input-label for="password" :value="__('Password')" class="text-neutral-700 dark:text-neutral-300 font-medium" />
+                        <x-input-label for="password" :value="__('Password')" class="text-neutral-700 font-medium" />
 
                         @if (Route::has('password.request'))
-                            <a class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline" href="{{ route('password.request') }}">
+                            <a class="text-xs font-semibold text-indigo-600 hover:underline" href="{{ route('password.request') }}">
                                 {{ __('Forgot password?') }}
                             </a>
                         @endif
@@ -49,7 +49,7 @@
 
                     <x-text-input
                         id="password"
-                        class="block mt-1 w-full bg-white text-black dark:bg-white dark:text-black border-neutral-300 dark:border-neutral-700 focus:border-indigo-500 focus:ring-indigo-500 rounded-xl px-4 py-3 text-sm transition-all shadow-sm"
+                        class="block mt-1 w-full bg-white text-black border-neutral-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-xl px-4 py-3 text-sm transition-all shadow-sm"
                         type="password"
                         name="password"
                         required
@@ -61,23 +61,23 @@
 
                 <div class="flex items-center justify-between pt-1">
                     <label for="remember_me" class="inline-flex items-center cursor-pointer">
-                        <input id="remember_me" type="checkbox" class="rounded border-neutral-300 dark:border-neutral-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:bg-neutral-900" name="remember">
-                        <span class="ms-2 text-sm text-neutral-600 dark:text-neutral-400 select-none">{{ __('Remember me') }}</span>
+                        <input id="remember_me" type="checkbox" class="rounded border-neutral-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
+                        <span class="ms-2 text-sm text-neutral-600 select-none">{{ __('Remember me') }}</span>
                     </label>
                 </div>
 
                 <div class="pt-2">
-                    <button type="submit" class="w-full flex justify-center py-3.5 px-4 border border-transparent rounded-xl shadow-md text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all cursor-pointer">
+                    <button type="submit" class="w-full flex justify-center py-3.5 px-4 border border-transparent rounded-xl shadow-md text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all cursor-pointer">
                         {{ __('Sign In to Portal') }}
                     </button>
                 </div>
             </form>
 
             @if (Route::has('register'))
-                <div class="text-center pt-4 border-t border-neutral-100 dark:border-neutral-800">
-                    <p class="text-sm text-neutral-500 dark:text-neutral-400">
+                <div class="text-center pt-4 border-t border-neutral-100">
+                    <p class="text-sm text-neutral-500">
                         New to the platform?
-                        <a href="{{ route('register') }}" class="font-semibold text-indigo-600 dark:text-indigo-400 hover:underline ms-1">
+                        <a href="{{ route('register') }}" class="font-semibold text-indigo-600 hover:underline ms-1">
                             Create an account
                         </a>
                     </p>

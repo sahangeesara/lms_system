@@ -18,7 +18,7 @@
                     </x-nav-link>
                 </div>
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('course')" :active="request()->routeIs('course')" class="text-sm font-semibold transition-all text-neutral-700 dark:text-neutral-300 hover:text-indigo-600 dark:hover:text-indigo-400 active:text-indigo-600 dark:active:text-indigo-400">
+                    <x-nav-link :href="route('student.courses.index')" :active="request()->routeIs('student.courses.index')" class="text-sm font-semibold transition-all text-neutral-700 dark:text-neutral-300 hover:text-indigo-600 dark:hover:text-indigo-400 active:text-indigo-600 dark:active:text-indigo-400">
                         {{ __('Course') }}
                     </x-nav-link>
                 </div>

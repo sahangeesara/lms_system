@@ -1,33 +1,67 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\Course;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
-class CourseController extends Controller
+class AdminCourseController extends Controller
 {
     /**
-     * Display a listing of the active courses.
+     * Display a listing of the resource.
      */
     public function index()
     {
         try {
-            $courses = Course::where('is_active', true)->with('instructor')->get();
+            $courses = Course::where('is_active', true)
+                ->with('instructor')
+                ->get();
 
-            return view('course', [
-                'courses' => $courses, // Plural variable for directory loop
-                'title'   => 'All Courses'
-            ]);
+            return view(
+                'admin.course.index',
+                [
+                    'courses' => $courses,
+                    'title'   => 'Courses'
+                ]);
+
         } catch (\Throwable $th) {
-            Log::error('Index view collection load failed: ' . $th->getMessage());
-            return redirect()->back()->withErrors(['error' => 'Failed to load catalog.']);
+            Log::error('Failed to fetch courses inside index(): ' . $th->getMessage(), [
+                'exception' => $th
+            ]);
+
+            return redirect()->back()->withErrors(['error' => 'Failed to load curriculum workspace catalog.']);
         }
     }
+
     /**
-     * Store a newly created course in storage.
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        try {
+            // Change 'instructor' to match your database value exactly 'Instructor'
+            $instructors = User::role('Instructor')
+                ->orderBy('name', 'asc')
+                ->get();
+
+            return view('admin.course.create', [
+                'instructors' => $instructors,
+                'title'       => 'Create New Course Blueprint'
+            ]);
+
+        } catch (\Throwable $th) {
+            Log::error('Failed to populate instructor listing within form factory: ' . $th->getMessage());
+            return redirect()->back()->withErrors(['error' => 'Could not initialize instructor database records.']);
+        }
+    }
+
+
+    /**
+     * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
@@ -54,7 +88,7 @@ class CourseController extends Controller
             // Clean, dynamic Mass Assignment initialization
             $course = Course::create($validatedData);
 
-            return redirect()->route('student.courses.create')
+            return redirect()->route('admin.courses.index')
                 ->with('success', "Course '{$course->title}' was successfully compiled into system records.");
 
         } catch (\Throwable $th) {
@@ -70,25 +104,40 @@ class CourseController extends Controller
     }
 
     /**
-     * Display the specified course model instance.
+     * Display the specified resource.
      */
     public function show(string $id)
     {
         try {
+            // singular variable semantic clarity matching object lookup pipelines
             $course = Course::with('instructor')->findOrFail($id);
 
-            return view('course', [
-                'course' => $course, // Singular variable for layout mapping
-                'title'  => $course->title
+            return view('admin.course.edit', [
+                'course' => $course,
+                'title'  => "Course Details - {$course->title}"
             ]);
+
         } catch (\Throwable $th) {
-            Log::error('Show details view target resolution error: ' . $th->getMessage());
-            return redirect()->route('student.courses.index')->withErrors(['error' => 'Course records missing.']);
+            Log::error('Course Record Target Resolution Error: ' . $th->getMessage(), [
+                'id'        => $id,
+                'exception' => $th
+            ]);
+
+            return redirect()->route('admin.courses.index')
+                ->withErrors(['error' => 'The target record layout cannot be parsed or located.']);
         }
     }
 
     /**
-     * Update the specified course payload safely.
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
     {
@@ -133,7 +182,7 @@ class CourseController extends Controller
     }
 
     /**
-     * Deactivate / Soft Delete the specified target element resource.
+     * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
