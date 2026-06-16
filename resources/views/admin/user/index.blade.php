@@ -95,7 +95,7 @@
                             <div class="flex items-center justify-end gap-2.5">
                                 @if(is_object($accountUser))
                                     <button type="button"
-                                            onclick="openEditUserModal('{{ route('admin.users.show', $accountUser) }}', '{{ route('admin.users.update', $accountUser) }}')"
+                                            onclick="window.location.href='{{ route('admin.users.edit', $accountUser) }}'"
                                             class="p-1.5 rounded-lg text-neutral-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-950/30 transition-all cursor-pointer"
                                             title="{{ __('Modify Profile') }}">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">

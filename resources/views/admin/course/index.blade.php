@@ -121,7 +121,7 @@
                             <div class="flex items-center justify-end gap-3">
                                 @if(is_object($course))
                                     <button type="button"
-                                            onclick="openEditCourseModal('{{ route('admin.courses.show', $course) }}', '{{ route('admin.courses.update', $course) }}')"
+                                            onclick="window.location.href='{{ route('admin.courses.edit', $course) }}'"
                                             class="p-1.5 rounded-lg text-neutral-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-950/30 transition-all cursor-pointer"
                                             title="{{ __('Edit Course') }}">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">

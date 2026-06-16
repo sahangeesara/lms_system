@@ -108,24 +108,7 @@ class AdminCourseController extends Controller
      */
     public function show(string $id)
     {
-        try {
-            // singular variable semantic clarity matching object lookup pipelines
-            $course = Course::with('instructor')->findOrFail($id);
 
-            return view('admin.course.edit', [
-                'course' => $course,
-                'title'  => "Course Details - {$course->title}"
-            ]);
-
-        } catch (\Throwable $th) {
-            Log::error('Course Record Target Resolution Error: ' . $th->getMessage(), [
-                'id'        => $id,
-                'exception' => $th
-            ]);
-
-            return redirect()->route('admin.courses.index')
-                ->withErrors(['error' => 'The target record layout cannot be parsed or located.']);
-        }
     }
 
     /**
@@ -133,9 +116,22 @@ class AdminCourseController extends Controller
      */
     public function edit(string $id)
     {
-        //
-    }
+        try {
+            $course = Course::with('instructor')->findOrFail($id);
 
+            // Fetch your instructor records right here inside your edit method too
+            $instructors = User::role('Instructor')->orderBy('name', 'asc')->get();
+
+            return view('admin.course.edit', [
+                'course'      => $course,
+                'instructors' => $instructors, // Pass it down to avoid undefined variable loops
+                'title'       => "Course Details - {$course->title}"
+            ]);
+        } catch (\Throwable $th) {
+            Log::error('Course Record Target Resolution Error: ' . $th->getMessage());
+            return redirect()->route('admin.courses.index')->withErrors(['error' => 'Record not found.']);
+        }
+    }
     /**
      * Update the specified resource in storage.
      */
