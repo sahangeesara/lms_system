@@ -17,44 +17,55 @@
     </x-slot>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-
-        <div class="bg-emerald-50/40 dark:bg-emerald-950/10 p-6 rounded-2xl border border-emerald-100 dark:border-emerald-900/20 shadow-sm hover:shadow-md transition-all">
-            <div class="flex items-center justify-between mb-3">
-                <span class="text-sm font-semibold text-emerald-700 dark:text-emerald-400">Overall Course Progress</span>
-                <span class="text-2xl">📈</span>
+        <div class="p-6 rounded-2xl bg-white dark:bg-[#131313] border border-neutral-200/60 dark:border-neutral-800/60 shadow-sm hover:shadow-md transition-all flex items-center justify-between group">
+            <div class="space-y-1.5">
+                <p class="text-xs font-bold text-neutral-400 dark:text-neutral-500 uppercase tracking-wider">
+                    {{ __('Total Students') }}
+                </p>
+                <h3 class="text-3xl font-black text-neutral-900 dark:text-white tracking-tight">
+                    {{ $students_count ?? '0' }}
+                </h3>
+                <p class="text-[11px] font-medium text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                    <span>✨</span> {{ __('Active learners onboarded') }}
+                </p>
             </div>
-            <div class="flex items-baseline gap-2">
-                <span class="text-3xl font-extrabold text-neutral-900 dark:text-white">74%</span>
-                <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30 px-2 py-0.5 rounded-md">+4% this week</span>
-            </div>
-            <div class="w-full bg-neutral-200/60 dark:bg-neutral-800 h-2 rounded-full mt-4 overflow-hidden">
-                <div class="bg-emerald-600 dark:bg-emerald-500 h-full rounded-full transition-all duration-500" style="width: 74%"></div>
-            </div>
-        </div>
-
-        <div class="bg-rose-50/40 dark:bg-rose-950/10 p-6 rounded-2xl border border-rose-100 dark:border-rose-900/20 shadow-sm hover:shadow-md transition-all">
-            <div class="flex items-center justify-between mb-3">
-                <span class="text-sm font-semibold text-rose-700 dark:text-rose-400">Study Time Goal</span>
-                <span class="text-2xl">⏳</span>
-            </div>
-            <div class="flex items-baseline gap-2">
-                <span class="text-3xl font-extrabold text-neutral-900 dark:text-white">12.5 hrs</span>
-                <span class="text-sm text-neutral-400">/ 15 hrs</span>
-            </div>
-            <div class="w-full bg-neutral-200/60 dark:bg-neutral-800 h-2 rounded-full mt-4 overflow-hidden">
-                <div class="bg-amber-500 h-full rounded-full transition-all duration-500" style="width: 83.3%"></div>
+            <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 dark:bg-indigo-500/5 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xl shadow-inner group-hover:scale-105 transition-transform duration-300">
+                👥
             </div>
         </div>
 
-        <div class="bg-indigo-50/40 dark:bg-indigo-950/10 p-6 rounded-2xl border border-indigo-100 dark:border-indigo-900/20 shadow-sm hover:shadow-md transition-all sm:col-span-2 lg:col-span-1">
-            <div class="flex items-center justify-between mb-3">
-                <span class="text-sm font-semibold text-indigo-700 dark:text-indigo-400">Completed Modules</span>
-                <span class="text-2xl">✅</span>
+        <div class="p-6 rounded-2xl bg-white dark:bg-[#131313] border border-neutral-200/60 dark:border-neutral-800/60 shadow-sm hover:shadow-md transition-all flex items-center justify-between group">
+            <div class="space-y-1.5">
+                <p class="text-xs font-bold text-neutral-400 dark:text-neutral-500 uppercase tracking-wider">
+                    {{ __('Instructors') }}
+                </p>
+                <h3 class="text-3xl font-black text-neutral-900 dark:text-white tracking-tight">
+                    {{ $instructors_count ?? '0' }}
+                </h3>
+                <p class="text-[11px] font-medium text-amber-600 dark:text-amber-500 flex items-center gap-1">
+                    <span>🛡️</span> {{ __('Verified staff members') }}
+                </p>
             </div>
-            <div class="flex items-baseline gap-2">
-                <span class="text-3xl font-extrabold text-neutral-900 dark:text-white">18 / 24</span>
+            <div class="w-12 h-12 rounded-2xl bg-amber-500/10 dark:bg-amber-500/5 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xl shadow-inner group-hover:scale-105 transition-transform duration-300">
+                👨‍🏫
             </div>
-            <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-4 font-medium">6 modules remaining across 2 active courses.</p>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-white dark:bg-[#131313] border border-neutral-200/60 dark:border-neutral-800/60 shadow-sm hover:shadow-md transition-all flex items-center justify-between group sm:col-span-2 lg:col-span-1">
+            <div class="space-y-1.5">
+                <p class="text-xs font-bold text-neutral-400 dark:text-neutral-500 uppercase tracking-wider">
+                    {{ __('Active Courses') }}
+                </p>
+                <h3 class="text-3xl font-black text-neutral-900 dark:text-white tracking-tight">
+                    {{ $courses_count ?? '0' }}
+                </h3>
+                <p class="text-[11px] font-medium text-indigo-600 dark:text-indigo-400 flex items-center gap-1">
+                    <span>📖</span> {{ __('Live curriculum modules') }}
+                </p>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 dark:bg-emerald-500/5 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl shadow-inner group-hover:scale-105 transition-transform duration-300">
+                💻
+            </div>
         </div>
     </div>
 

@@ -47,7 +47,11 @@
             @endif
 
             @if(isset($course))
+                @php
+                    $isEnrolled = isset($myEnrollments) && in_array($course->id, $myEnrollments);
+                @endphp
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
                     <div class="lg:col-span-2 space-y-6">
                         <div class="p-6 rounded-2xl bg-white dark:bg-[#131313] border border-neutral-200/60 dark:border-neutral-800/60 space-y-4">
                             @if($course->image)
@@ -85,6 +89,30 @@
                                     {{ $course->status ?? 'Draft' }}
                                 </span>
                             </div>
+
+                            <div class="pt-2">
+                                @if($isEnrolled)
+                                    @php $firstLesson = collect($course->lessons)->first(); @endphp
+                                    @if($firstLesson)
+                                        <a href="{{ route('student.lessons.show', ['slug' => $firstLesson->slug]) }}"
+                                           class="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white font-bold text-xs tracking-wide shadow-sm hover:shadow transition-all text-center cursor-pointer">
+                                            <span>🚀</span> {{ __('Enter Classroom Workspace') }}
+                                        </a>
+                                    @else
+                                        <button disabled class="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-neutral-100 dark:bg-neutral-900 text-neutral-400 dark:text-neutral-600 font-bold text-xs border border-neutral-200/50 dark:border-neutral-800/50 cursor-not-allowed text-center">
+                                            <span>🔒</span> {{ __('Classroom Offline') }}
+                                        </button>
+                                    @endif
+                                @else
+                                    <form action="{{ route('student.payment.checkout') }}" method="POST" class="m-0 p-0">
+                                        @csrf
+                                        <input type="hidden" name="course_id" value="{{ $course->id }}">
+                                        <button type="submit" class="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs tracking-wide shadow-md hover:shadow-lg transition-all text-center cursor-pointer">
+                                            <span>💳</span> {{ __('Buy and Enroll Now') }}
+                                        </button>
+                                    </form>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -92,6 +120,9 @@
             @else
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     @forelse($courses ?? [] as $item)
+                        @php
+                            $isItemEnrolled = isset($myEnrollments) && in_array($item->id, $myEnrollments);
+                        @endphp
                         <div class="group flex flex-col justify-between p-5 rounded-2xl bg-white dark:bg-[#131313] border border-neutral-200/60 dark:border-neutral-800/60 hover:border-indigo-500/40 transition-all duration-300">
                             <div class="space-y-4">
                                 <div class="relative w-full h-44 rounded-xl bg-neutral-100 dark:bg-neutral-900 overflow-hidden border border-neutral-200/40 dark:border-neutral-800/40">
@@ -131,6 +162,20 @@
                                     <a href="{{ route('student.courses.show', $item->id) }}" class="px-3 py-1.5 rounded-lg bg-neutral-50 hover:bg-neutral-100 dark:bg-neutral-900 dark:hover:bg-neutral-800 font-bold text-[11px] text-neutral-700 dark:text-neutral-300 border border-neutral-200 dark:border-neutral-800 transition-colors cursor-pointer">
                                         {{ __('View Scope') }}
                                     </a>
+
+                                    @if($isItemEnrolled)
+                                        <span class="px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 rounded-lg select-none">
+                                            ✔ {{ __('Enrolled') }}
+                                        </span>
+                                    @else
+                                        <form action="{{ route('student.payment.checkout') }}" method="POST" class="m-0 p-0 inline">
+                                            @csrf
+                                            <input type="hidden" name="course_id" value="{{ $item->id }}">
+                                            <button type="submit" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] transition-colors cursor-pointer">
+                                                {{ __('Pay & Enroll') }}
+                                            </button>
+                                        </form>
+                                    @endif
                                 </div>
                             </div>
                         </div>

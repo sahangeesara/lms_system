@@ -1,46 +1,52 @@
 <nav x-data="{ open: false }" class="bg-white dark:bg-[#131313] border-b border-neutral-200/60 dark:border-neutral-800/60 sticky top-0 z-50 transition-colors duration-300">
-    <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex">
-                <!-- LMS Logo / Branding -->
+                <!-- Branding Header -->
                 <div class="shrink-0 flex items-center gap-2">
-                    <a href="{{ route('dashboard') }}" class="flex items-center gap-2 text-xl font-bold tracking-tight text-neutral-900 dark:text-white group">
+                    <a href="{{ route('student.dashboard') }}" class="flex items-center gap-2 text-xl font-bold tracking-tight text-neutral-900 dark:text-white group">
                         <span>🎓</span>
                         <span>Edu<span class="text-indigo-600 dark:text-indigo-400 transition-colors">Stream</span></span>
                     </a>
                 </div>
 
-                <!-- Navigation Links -->
+                <!-- Desktop Desktop Navigation Link Blocks -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" class="text-sm font-semibold transition-all text-neutral-700 dark:text-neutral-300 hover:text-indigo-600 dark:hover:text-indigo-400 active:text-indigo-600 dark:active:text-indigo-400">
+                    <x-nav-link :href="route('student.dashboard')" :active="request()->routeIs('student.dashboard')" class="text-sm font-semibold transition-all text-neutral-700 dark:text-neutral-300 hover:text-indigo-600 dark:hover:text-indigo-400">
                         {{ __('Dashboard') }}
                     </x-nav-link>
                 </div>
+
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('student.courses.index')" :active="request()->routeIs('student.courses.index')" class="text-sm font-semibold transition-all text-neutral-700 dark:text-neutral-300 hover:text-indigo-600 dark:hover:text-indigo-400 active:text-indigo-600 dark:active:text-indigo-400">
-                        {{ __('Course') }}
+                    <x-nav-link :href="route('student.courses.index')" :active="request()->routeIs('student.courses.index') || request()->routeIs('student.courses.show')" class="text-sm font-semibold transition-all text-neutral-700 dark:text-neutral-300 hover:text-indigo-600 dark:hover:text-indigo-400">
+                        {{ __('Courses') }}
                     </x-nav-link>
                 </div>
+
+                <!-- DYNAMIC LINK: Only visible when actively browsing inside a classroom model layout context -->
+                @if(isset($lesson) && isset($lesson->slug) && !str_starts_with($lesson->slug, 'no-lessons-'))
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                        <x-nav-link :href="route('student.lessons.show', ['lesson' => $lesson->slug])"
+                                    :active="request()->routeIs('student.lessons.show')"
+                                    class="text-sm font-semibold transition-all text-neutral-700 dark:text-neutral-300 hover:text-indigo-600 dark:hover:text-indigo-400">
+                            {{ __('Current Lesson') }}
+                        </x-nav-link>
+                    </div>
+                @endif
+
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('lesson')" :active="request()->routeIs('lesson')" class="text-sm font-semibold transition-all text-neutral-700 dark:text-neutral-300 hover:text-indigo-600 dark:hover:text-indigo-400 active:text-indigo-600 dark:active:text-indigo-400">
-                        {{ __('Lesson') }}
-                    </x-nav-link>
-                </div>
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('enrollment')" :active="request()->routeIs('enrollment')" class="text-sm font-semibold transition-all text-neutral-700 dark:text-neutral-300 hover:text-indigo-600 dark:hover:text-indigo-400 active:text-indigo-600 dark:active:text-indigo-400">
+                    <x-nav-link :href="route('student.enrollments.index')" :active="request()->routeIs('student.enrollments.index')" class="text-sm font-semibold transition-all text-neutral-700 dark:text-neutral-300 hover:text-indigo-600 dark:hover:text-indigo-400">
                         {{ __('Enrollment') }}
                     </x-nav-link>
                 </div>
             </div>
 
-            <!-- Settings Dropdown -->
+            <!-- Settings Menu Dropdown Wrapper -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3.5 py-2 border border-neutral-200/60 dark:border-neutral-800/80 text-sm leading-4 font-medium rounded-xl text-neutral-600 dark:text-neutral-300 bg-neutral-50 dark:bg-neutral-900/50 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800/60 focus:outline-none transition ease-in-out duration-150 cursor-pointer">
                             <div>{{ Auth::user()->name }}</div>
-
                             <div class="ms-1.5 text-neutral-400 dark:text-neutral-500">
                                 <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -54,14 +60,11 @@
                             {{ __('Profile Settings') }}
                         </x-dropdown-link>
 
-                        <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-
                             <x-dropdown-link :href="route('logout')"
                                              class="font-medium text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20"
-                                             onclick="event.preventDefault();
-                                                this.closest('form').submit();">
+                                             onclick="event.preventDefault(); this.closest('form').submit();">
                                 {{ __('Log Out') }}
                             </x-dropdown-link>
                         </form>
@@ -69,7 +72,7 @@
                 </x-dropdown>
             </div>
 
-            <!-- Hamburger Button -->
+            <!-- Hamburger Button Icon for Mobile Formats -->
             <div class="-me-2 flex items-center sm:hidden">
                 <button @click="open = ! open" class="inline-flex items-center justify-center p-2.5 rounded-xl text-neutral-500 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800/60 focus:outline-none transition duration-150 ease-in-out cursor-pointer">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
@@ -81,30 +84,35 @@
         </div>
     </div>
 
-    <!-- Responsive Navigation Menu (Mobile) -->
+    <!-- Responsive Drawer Layout Panel (Mobile Viewports) -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden border-t border-neutral-100 dark:border-neutral-800/60 bg-white dark:bg-[#131313]">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" class="font-semibold text-neutral-700 dark:text-neutral-300 active:text-indigo-600 dark:active:text-indigo-400">
+            <x-responsive-nav-link :href="route('student.dashboard')" :active="request()->routeIs('student.dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
         </div>
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('course')" :active="request()->routeIs('course')" class="font-semibold text-neutral-700 dark:text-neutral-300 active:text-indigo-600 dark:active:text-indigo-400">
-                {{ __('Course') }}
+            <x-responsive-nav-link :href="route('student.courses.index')" :active="request()->routeIs('student.courses.index') || request()->routeIs('student.courses.show')">
+                {{ __('Courses') }}
             </x-responsive-nav-link>
         </div>
+
+        <!-- MOBILE DYNAMIC LINK: Hides when overviewing courses that contain no lessons -->
+        @if(isset($lesson) && isset($lesson->slug) && !str_starts_with($lesson->slug, 'no-lessons-'))
+            <div class="pt-2 pb-3 space-y-1">
+                <x-responsive-nav-link :href="route('student.lessons.show', ['lesson' => $lesson->slug])" :active="request()->routeIs('student.lessons.show')">
+                    {{ __('Current Lesson') }}
+                </x-responsive-nav-link>
+            </div>
+        @endif
+
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('lesson')" :active="request()->routeIs('lesson')" class="font-semibold text-neutral-700 dark:text-neutral-300 active:text-indigo-600 dark:active:text-indigo-400">
-                {{ __('Lesson') }}
-            </x-responsive-nav-link>
-        </div>
-        <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('enrollment')" :active="request()->routeIs('enrollment')" class="font-semibold text-neutral-700 dark:text-neutral-300 active:text-indigo-600 dark:active:text-indigo-400">
+            <x-responsive-nav-link :href="route('student.enrollments.index')" :active="request()->routeIs('student.enrollments.index')">
                 {{ __('Enrollment') }}
             </x-responsive-nav-link>
         </div>
 
-        <!-- Responsive Settings Options -->
+        <!-- User Information Banner Footer (Mobile Drawer) -->
         <div class="pt-4 pb-4 border-t border-neutral-200/60 dark:border-neutral-800/60 bg-neutral-50/50 dark:bg-neutral-900/30">
             <div class="px-4 mb-3">
                 <div class="font-bold text-base text-neutral-900 dark:text-white">{{ Auth::user()->name }}</div>
@@ -116,14 +124,11 @@
                     {{ __('Profile Settings') }}
                 </x-responsive-nav-link>
 
-                <!-- Authentication -->
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-
                     <x-responsive-nav-link :href="route('logout')"
                                            class="font-medium text-red-600 dark:text-red-400"
-                                           onclick="event.preventDefault();
-                                        this.closest('form').submit();">
+                                           onclick="event.preventDefault(); this.closest('form').submit();">
                         {{ __('Log Out') }}
                     </x-responsive-nav-link>
                 </form>

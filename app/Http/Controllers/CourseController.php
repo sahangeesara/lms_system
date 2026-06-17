@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
+use App\Models\Enrollment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
@@ -14,17 +16,18 @@ class CourseController extends Controller
      */
     public function index()
     {
-        try {
-            $courses = Course::where('is_active', true)->with('instructor')->get();
+        $courses = Course::where('status', 'published')->get();
 
-            return view('course', [
-                'courses' => $courses, // Plural variable for directory loop
-                'title'   => 'All Courses'
-            ]);
-        } catch (\Throwable $th) {
-            Log::error('Index view collection load failed: ' . $th->getMessage());
-            return redirect()->back()->withErrors(['error' => 'Failed to load catalog.']);
+        // Fetch an array of all course IDs the authenticated user has purchased
+        $myEnrollments = [];
+        if (Auth::check()) {
+            $myEnrollments = Enrollment::where('user_id', Auth::id())
+                ->where('is_active', true)
+                ->pluck('course_id')
+                ->toArray(); // Results in a clean array: [1, 5, 12]
         }
+
+        return view('course', compact('courses', 'myEnrollments'));
     }
     /**
      * Store a newly created course in storage.
@@ -72,21 +75,20 @@ class CourseController extends Controller
     /**
      * Display the specified course model instance.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        try {
-            $course = Course::with('instructor')->findOrFail($id);
+        $course = Course::with('lessons')->findOrFail($id);
 
-            return view('course', [
-                'course' => $course, // Singular variable for layout mapping
-                'title'  => $course->title
-            ]);
-        } catch (\Throwable $th) {
-            Log::error('Show details view target resolution error: ' . $th->getMessage());
-            return redirect()->route('student.courses.index')->withErrors(['error' => 'Course records missing.']);
+        $myEnrollments = [];
+        if (Auth::check()) {
+            $myEnrollments = Enrollment::where('user_id', Auth::id())
+                ->where('is_active', true)
+                ->pluck('course_id')
+                ->toArray();
         }
-    }
 
+        return view('course', compact('course', 'myEnrollments'));
+    }
     /**
      * Update the specified course payload safely.
      */

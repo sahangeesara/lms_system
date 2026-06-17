@@ -101,6 +101,13 @@
             </button>
         </div>
     </form>
-
+    <script>
+        function generateSlug(text) {
+            document.getElementById('course_slug').value = text
+                .toLowerCase()
+                .replace(/[^\w ]+/g, '')
+                .replace(/ +/g, '-');
+        }
+    </script>
 
 </x-admin-app-layout>

@@ -1,11 +1,17 @@
 <?php
 
 use App\Http\Controllers\admin\AdminCourseController;
+use App\Http\Controllers\admin\AdminDashboardController;
+use App\Http\Controllers\admin\AdminEnrollmentsController;
 use App\Http\Controllers\admin\AdminLessonController;
 use App\Http\Controllers\admin\AdminUserController;
 use App\Http\Controllers\admin\AdminCourseController2;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EnrollmentsController;
+use App\Http\Controllers\LessonController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StripeController;
 use Illuminate\Support\Facades\Route;
 
 // Public Guest Root Landing Page
@@ -17,10 +23,9 @@ Route::get('/', function () {
 // STANDARD USER STUDENT PORTAL ROUTES
 // =========================================================================
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', function () { return view('dashboard'); })->name('dashboard');
     Route::get('/course', function () { return view('course'); })->name('course');
-    Route::get('/lesson', function () { return view('lesson'); })->name('lesson');
-    Route::get('/enrollment', function () { return view('enrollment'); })->name('enrollment');
+    Route::get('/lesson', function () { return view('lessons'); })->name('lesson');
+    Route::get('/enrollment', function () { return view('enrollments'); })->name('enrollment');
 });
 
 // Profile Editing Pipeline Management
@@ -39,10 +44,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])
     ->group(function () {
 
         // Core Admin Dashboard
-        Route::get('/dashboard', function () {
-            return view('admin.page.dashboard');
-        })->name('dashboard');
-
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
         Route::resource('/users', AdminUserController::class);
 
@@ -58,7 +60,6 @@ Route::middleware(['auth', 'verified', 'role:admin'])
 
         // Course Management
         Route::resource('/courses', AdminCourseController::class);
-        Route::resource('/lesson', AdminLessonController::class);
 
         Route::get('/course/create',function (){
             return view('admin.course.create');
@@ -68,17 +69,14 @@ Route::middleware(['auth', 'verified', 'role:admin'])
             return view('admin.course.edit');
         } )->name('courses.edit');
 
-        // Lesson Configuration
-        Route::get('/lessons', function () {
-            return "Admin Lessons";
-        })->name('lessons.index');
+        Route::resource('/lessons', AdminLessonController::class);
+        Route::resource('/enrollments', AdminEnrollmentsController::class);
+
+        Route::get('/lessons/edit', function () {
+            return view('admin.lessons.edit');
+        })->name('lessons.edi');
 
         // Enrollment Pipelines
-        Route::get('/enrollments', function () {
-            return "Admin Enrollments";
-        })->name('enrollments.index');
-
-
 
         // Structural Testing Layout Anchor
         Route::get('/side-navbar', function () {
@@ -99,11 +97,22 @@ Route::middleware(['auth', 'role_or:student|admin'])
     ->prefix('student')
     ->name('student.')
     ->group(function () {
-    Route::get('/dashboard', function () {
-        return "Student Dashboard";
-    });
+    Route::get('/dashboard', [DashboardController::class,'index'])->name('dashboard');
     Route::resource('/courses', CourseController::class);
+    Route::resource('/lessons', LessonController::class);
+    Route::resource('/enrollments', EnrollmentsController::class);
 
+    Route::get('/lessons/{slug}', [LessonController::class, 'show'])->name('lessons.show');
+
+        Route::get('/enrollments', [EnrollmentsController::class, 'enrollments'])->name('enrollments.index');
+        // Change the URI parameter string from '/payment/checkout' to just '/checkout'
+        Route::post('/checkout', [StripeController::class, 'checkout'])->name('payment.checkout');
+
+        // If you want your success and cancel pages to match, drop the '/payment' here too:
+        Route::get('/checkout/success', [StripeController::class, 'success'])->name('payment.success');
+        Route::get('/checkout/cancel', [StripeController::class, 'cancel'])->name('payment.cancel');
+
+        Route::get('/lessons/{slug}', [LessonController::class, 'show'])->name('lessons.show');
 });
 
 require __DIR__.'/auth.php';

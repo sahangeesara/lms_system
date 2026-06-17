@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Enrollment extends Model
 {
@@ -11,25 +11,48 @@ class Enrollment extends Model
         'id',
         'user_id',
         'course_id',
-        'payment_id',
         'amount_paid',
         'enrolled_at',
         'status',
         'completed_at',
         'suspended_at',
-        'payment_id',
+        'payment_id', // FIXED: Removed duplicate 'payment_id' entry
         'is_active',
     ];
 
+    /**
+     * The attributes that should be cast.
+     * Crucial for letting you call ->format() directly on your custom timestamp strings
+     */
+    protected $casts = [
+        'enrolled_at'   => 'datetime',
+        'completed_at'  => 'datetime',
+        'suspended_at'  => 'datetime',
+        'is_active'     => 'boolean',
+        'amount_paid'   => 'decimal:2',
+    ];
 
-    public function enrolledCourses(): BelongsToMany
+    /**
+     * Get the student profile that owns this enrollment record.
+     */
+    public function user(): BelongsTo
     {
-        return $this->belongsToMany(Course::class, 'enrollments')->withTimestamps();
+        return $this->belongsTo(User::class);
     }
 
-    public function payment()
+    /**
+     * Get the specific structural course tied to this enrollment record.
+     */
+    public function course(): BelongsTo
     {
-        return $this->belongsTo(Payment::class);
+        return $this->belongsTo(Course::class, 'course_id');
     }
 
+    /**
+     * Get the payment transaction tracking log if it exists.
+     */
+    public function payment(): BelongsTo
+    {
+        return $this->belongsTo(Payment::class, 'payment_id');
+    }
 }
