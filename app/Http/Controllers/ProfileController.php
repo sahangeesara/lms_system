@@ -16,8 +16,21 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
+        $user = $request->user();
+
+        // Define default
+        $layout = 'app-layout';
+
+        // Set layout based on your role logic
+        if ($user->hasRole('admin')) {
+            $layout = 'admin-app-layout';
+        } elseif ($user->hasRole('instructor')) {
+            $layout = 'instructor-app-layout';
+        }
+
         return view('profile.edit', [
-            'user' => $request->user(),
+            'user'   => $user,
+            'layout' => $layout // Pass it here!
         ]);
     }
 

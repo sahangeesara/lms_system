@@ -1,78 +1,60 @@
-<x-app-layout>
+<x-dynamic-component :component="$layout">
     <x-slot name="header">
-        <div>
-            <h2 class="font-extrabold text-2xl tracking-tight text-neutral-900 dark:text-white">
-                {{ __('Account Profile Settings') }}
-            </h2>
-            <p class="text-sm text-neutral-500 dark:text-neutral-400 mt-0.5">
-                Update your identity parameters, security configurations, and login credentials.
-            </p>
-        </div>
+        <h2 class="font-extrabold text-2xl tracking-tight text-neutral-900 dark:text-white">
+            {{ __('Account Profile Settings') }}
+        </h2>
     </x-slot>
 
-    <div class="space-y-8">
-        <!-- Main Configuration Section Grid -->
+    <div class="space-y-8" x-data="{ activeTab: 'profile' }">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-            <!-- Left Side Descriptive Meta Context Column -->
             <div class="lg:col-span-1">
                 <div class="sticky top-24 space-y-4">
-                    <div class="p-6 bg-white dark:bg-[#131313] border border-neutral-200/60 dark:border-neutral-800/60 rounded-2xl shadow-sm">
-                        <div class="flex items-center gap-3 mb-3">
-                            <div class="text-2xl">👤</div>
-                            <h3 class="font-bold text-neutral-900 dark:text-white text-base">Personal Identity</h3>
-                        </div>
-                        <p class="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed">
-                            Keep your communication endpoints accurate. Your display name is visible across active LMS course rosters, group assignments, and certificates.
-                        </p>
-                    </div>
-
-                    <div class="p-6 bg-white dark:bg-[#131313] border border-neutral-200/60 dark:border-neutral-800/60 rounded-2xl shadow-sm">
-                        <div class="flex items-center gap-3 mb-3">
-                            <div class="text-2xl">🔐</div>
-                            <h3 class="font-bold text-neutral-900 dark:text-white text-base">Security Protocols</h3>
-                        </div>
-                        <p class="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed">
-                            Ensure your account uses a long, unique passphrase to safeguard internal academic grading history and authentication states.
-                        </p>
+                    <div class="p-6 bg-white dark:bg-[#131313] border border-neutral-200 rounded-2xl shadow-sm">
+                        <h3 class="font-bold mb-2">Account Management</h3>
+                        <p class="text-xs text-neutral-500">Manage your identity and security settings from this unified dashboard.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Right Side Interactive Forms Column -->
-            <div class="lg:col-span-2 space-y-8">
-                <!-- Profile Information Card Wrapper -->
-                <div class="p-6 sm:p-8 bg-white dark:bg-[#131313] border border-neutral-200/60 dark:border-neutral-800/60 rounded-2xl shadow-sm">
-                    <div class="max-w-xl">
-                        @include('profile.partials.update-profile-information-form')
-                    </div>
+            <div class="lg:col-span-2 space-y-6">
+                <div class="flex gap-1 p-1 bg-neutral-100 dark:bg-neutral-800 rounded-xl w-fit border border-neutral-200 dark:border-neutral-700">
+
+                    <button @click="activeTab = 'profile'"
+                            :class="activeTab === 'profile'
+                ? 'bg-indigo-600 text-white shadow-md'
+                : 'text-neutral-500 hover:text-neutral-900 hover:bg-neutral-200 dark:text-neutral-400 dark:hover:text-white'"
+                            class="px-6 py-2 text-sm font-bold rounded-lg transition-all duration-200 ease-in-out">
+                        {{ __('Profile') }}
+                    </button>
+
+                    <button @click="activeTab = 'security'"
+                            :class="activeTab === 'security'
+                ? 'bg-indigo-600 text-white shadow-md'
+                : 'text-neutral-500 hover:text-neutral-900 hover:bg-neutral-200 dark:text-neutral-400 dark:hover:text-white'"
+                            class="px-6 py-2 text-sm font-bold rounded-lg transition-all duration-200 ease-in-out">
+                        {{ __('Security') }}
+                    </button>
                 </div>
 
-                <!-- Security Password Reset Card Wrapper -->
-                <div class="p-6 sm:p-8 bg-white dark:bg-[#131313] border border-neutral-200/60 dark:border-neutral-800/60 rounded-2xl shadow-sm">
-                    <div class="max-w-xl">
-                        @include('profile.partials.update-password-form')
-                    </div>
+                <div x-show="activeTab === 'profile'" class="p-8 bg-white border border-neutral-200 rounded-2xl shadow-sm">
+                    @include('profile.partials.update-profile-information-form')
+                </div>
+
+                <div x-show="activeTab === 'security'" class="p-8 bg-white border border-neutral-200 rounded-2xl shadow-sm">
+                    @include('profile.partials.update-password-form')
                 </div>
             </div>
-
         </div>
 
-        <!-- Dangerous Boundary Section Break -->
-        <div class="pt-6 border-t border-neutral-200/60 dark:border-neutral-800/60">
-            <div class="bg-red-50/40 dark:bg-red-950/10 border border-red-200/60 dark:border-red-900/30 rounded-2xl p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                <div class="max-w-2xl">
-                    <h3 class="font-bold text-red-800 dark:text-red-400 text-lg flex items-center gap-2">
-                        <span>⚠️</span> {{ __('Deactivate Academic Profile') }}
-                    </h3>
-                    <p class="text-sm text-neutral-600 dark:text-neutral-400 mt-1 leading-relaxed">
-                        Once your profile is purged, all related structural data points—including course certificates, module progress metrics, and pending grading submissions—will be permanently erased.
-                    </p>
+        <div class="pt-6 border-t border-neutral-200">
+            <div class="bg-red-50/50 rounded-2xl p-8 flex flex-col md:flex-row justify-between items-center gap-6">
+                <div>
+                    <h3 class="font-bold text-red-800 text-lg">Deactivate Profile</h3>
+                    <p class="text-sm text-neutral-600 mt-1">Permanently erase all academic history and grading data.</p>
                 </div>
-                <div class="shrink-0 max-w-xl">
-                    @include('profile.partials.delete-user-form')
-                </div>
+                @include('profile.partials.delete-user-form')
             </div>
         </div>
     </div>
-</x-app-layout>
+</x-dynamic-component>

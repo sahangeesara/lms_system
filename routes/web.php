@@ -9,6 +9,10 @@ use App\Http\Controllers\admin\AdminCourseController2;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EnrollmentsController;
+use App\Http\Controllers\instructor\InstructorCourseController;
+use App\Http\Controllers\instructor\InstructorDashboardController;
+use App\Http\Controllers\instructor\InstructorEnrollmentsController;
+use App\Http\Controllers\instructor\InstructorLessonController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StripeController;
@@ -87,11 +91,16 @@ Route::middleware(['auth', 'verified', 'role:admin'])
 // =========================================================================
 // ADDITIONAL ROLE SPECIFIC DASHBOARDS
 // =========================================================================
-Route::middleware(['auth', 'role_or:Instructor|admin'])->group(function () {
-    Route::get('/instructor/dashboard', function () {
-        return "Instructor Dashboard";
+Route::middleware(['auth', 'role_or:instructor|admin'])
+    ->prefix('instructor')
+    ->name('instructor.')
+    ->group(function () {
+        Route::get('/dashboard', [InstructorDashboardController::class,'index'])->name('dashboard');
+        Route::resource('/courses', InstructorCourseController::class);
+        Route::resource('/lessons', InstructorLessonController::class);
+        Route::resource('/enrollments', InstructorEnrollmentsController::class);
+
     });
-});
 
 Route::middleware(['auth', 'role_or:student|admin'])
     ->prefix('student')

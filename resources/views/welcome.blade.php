@@ -31,12 +31,13 @@
     @if (Route::has('login'))
         <nav class="flex items-center gap-4">
             @auth
-                <a
-                    href="{{ url('student/dashboard') }}"
-                    class="inline-block px-5 py-2 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-full text-sm font-medium transition-all"
-                >
-                    Dashboard
-                </a>
+                @role('student')
+                <a href="{{ url('student/dashboard') }}" class="...">Dashboard</a>
+                @endrole
+
+                @role('instructor')
+                <a href="{{ url('instructor/dashboard') }}" class="...">Dashboard</a>
+                @endrole
             @else
                 <a
                     href="{{ route('login') }}"
