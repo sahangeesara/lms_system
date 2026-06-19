@@ -14,27 +14,22 @@ class AdminCourseController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        try {
-            $courses = Course::where('is_active', true)
-                ->with('instructor')
-                ->get();
+        $courses = Course::query()
+            ->when($request->search, fn($q, $s) => $q->where('title', 'like', "%{$s}%"))
+            ->when($request->status, fn($q, $s) => $q->where('status', $s))
+            ->when($request->instructor_id, fn($q, $id) => $q->where('instructor_id', $id))
+            ->when($request->price_range, function ($query, $range) {
+                // Split the string by '-' to get min and max
+                [$min, $max] = explode('-', $range);
+                return $query->whereBetween('price', [(float)$min, (float)$max]);
+            })
+            ->get();
 
-            return view(
-                'admin.course.index',
-                [
-                    'courses' => $courses,
-                    'title'   => 'Courses'
-                ]);
+        $instructors = User::whereHas('courses')->get(); // Or fetch all potential instructors
 
-        } catch (\Throwable $th) {
-            Log::error('Failed to fetch courses inside index(): ' . $th->getMessage(), [
-                'exception' => $th
-            ]);
-
-            return redirect()->back()->withErrors(['error' => 'Failed to load curriculum workspace catalog.']);
-        }
+        return view('admin.course.index', compact('courses', 'instructors'));
     }
 
     /**

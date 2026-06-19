@@ -9,11 +9,6 @@
                     {{ __('Control center for managing global course admission footprints and access tokens.') }}
                 </p>
             </div>
-            <div>
-                <a href="{{ route('admin.enrollments.create') }}" class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2.5 rounded-xl shadow-sm transition-all cursor-pointer">
-                    <span>➕ {{ __('New Enrollment') }}</span>
-                </a>
-            </div>
         </div>
     </x-slot>
 

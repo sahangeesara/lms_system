@@ -15,27 +15,21 @@ class AdminUserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        try {
-            // 1. Fetch all users from your application database mapping
-            $users = User::with('roles')->get();
+        $users = User::query()
+            ->when($request->search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%");
+                });
+            })
+            ->when($request->role, function ($query, $role) {
+                $query->whereHas('roles', fn($q) => $q->where('name', $role));
+            })
+            ->get();
 
-            info(print_r($users, true));
-            // 2. Point to your user management view instead of the courses view
-            return view('admin.user.index', compact('users'));
-
-        } catch (\Throwable $th) {
-            // Log the structural error cleanly inside storage/logs/laravel.log
-            Log::error('Failed to load user management index view: ' . $th->getMessage(), [
-                'exception' => $th
-            ]);
-
-            return response()->json([
-                'message' => 'Failed to fetch users',
-                'error' => $th->getMessage()
-            ], 500);
-        }
+        return view('admin.user.index', compact('users'));
     }
 
     /**

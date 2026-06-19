@@ -13,7 +13,7 @@
         </div>
     </x-slot>
 
-    <form id="courseForm" action="{{ route('admin.courses.store') }}" method="POST" enctype="multipart/form-data" class="flex-1 overflow-y-auto p-6 space-y-4 m-0">
+    <form id="courseForm" action="{{ route('instructor.courses.store') }}" method="POST" enctype="multipart/form-data" class="flex-1 overflow-y-auto p-6 space-y-4 m-0">
         @csrf
         <div id="methodOverride"></div>
 
