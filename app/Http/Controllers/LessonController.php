@@ -60,50 +60,22 @@ class LessonController extends Controller
      */
     public function show($lesson)
     {
-        // 1. Handle Mock Lessons
-        if (str_starts_with($lesson, 'no-lessons-')) {
-            $courseId = str_replace('no-lessons-', '', $lesson);
-            $course = Course::findOrFail($courseId);
-            $this->checkEnrollmentAccess($course->id);
+        // Laravel has already performed the lookup by slug automatically!
 
-            $body = trim(__('The instruction material for this course is currently under assembly. Please check back later!'));
+        // Check enrollment
+        $this->checkEnrollmentAccess($lesson->course_id);
 
-            $mockLesson = new Lesson([
-                'title' => __('Curriculum Workspace Pending'),
-                'order' => 0,
-                'video_url' => null,
-                'content' => json_encode(['body' => $body])
-            ]);
-            $mockLesson->course = $course;
-
-            // Fetch empty or limited sidebar for pending courses
-            $allLessons = collect([]);
-
-            return view('lessons', ['lesson' => $mockLesson, 'allLessons' => $allLessons]);
-        }
-
-        // 2. Standard Lesson Lookup
-        $lessonData = Lesson::with('course')->where('slug', $lesson)->firstOrFail();
-        $this->checkEnrollmentAccess($lessonData->course_id);
-
-        // Sanitize content
-        if (!empty($lessonData->content)) {
-            $decoded = json_decode($lessonData->content, true);
-            if (is_array($decoded) && isset($decoded['body'])) {
-                $decoded['body'] = trim($decoded['body']);
-                $lessonData->content = json_encode($decoded);
-            }
-        }
-
-        // Fetch sidebar lessons for the current course
-        $allLessons = Lesson::where('course_id', $lessonData->course_id)
+        // Fetch sidebar
+        $allLessons = Lesson::where('course_id', $lesson->course_id)
             ->orderBy('order', 'asc')
             ->get();
 
         return view('lessons', [
-            'lesson'     => $lessonData,
+            'lesson'     => $lesson,
             'allLessons' => $allLessons
         ]);
+
+
     }
     private function checkEnrollmentAccess($courseId)
     {

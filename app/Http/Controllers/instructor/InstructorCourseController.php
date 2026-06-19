@@ -14,29 +14,16 @@ class InstructorCourseController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        try {
-            $courses = Course::where('instructor_id', auth()->id())
-                ->where('is_active', true)
-                ->get();
+        // Filter only courses belonging to the authenticated instructor
+        $courses = Course::where('instructor_id', auth()->id())
+            ->when($request->search, fn($q, $s) => $q->where('title', 'like', "%{$s}%"))
+            ->when($request->status, fn($q, $s) => $q->where('status', $s))
+            ->get();
 
-            return view(
-                'instructor.courses.index',
-                [
-                    'courses' => $courses,
-                    'title'   => 'Courses'
-                ]);
-
-        } catch (\Throwable $th) {
-            Log::error('Failed to fetch courses inside index(): ' . $th->getMessage(), [
-                'exception' => $th
-            ]);
-
-            return redirect()->back()->withErrors(['error' => 'Failed to load curriculum workspace catalog.']);
-        }
+        return view('instructor.courses.index', compact('courses'));
     }
-
     /**
      * Show the form for creating a new resource.
      */

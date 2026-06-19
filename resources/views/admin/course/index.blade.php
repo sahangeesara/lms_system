@@ -66,7 +66,13 @@
                 @forelse($courses as $course)
                     <tr class="hover:bg-neutral-50/40 dark:hover:bg-[#141414] transition-colors">
                         <td class="py-4 px-6 flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-lg bg-neutral-100 flex items-center justify-center text-xl">💻</div>
+                            <div class="w-12 h-12 rounded-lg bg-neutral-100 dark:bg-neutral-800 shrink-0 overflow-hidden border border-neutral-200/40 flex items-center justify-center">
+                                @if($course->image)
+                                    <img src="{{ asset($course->image) }}" alt="{{ $course->title }}" class="w-full h-full object-cover">
+                                @else
+                                    <span class="text-xl">💻</span>
+                                @endif
+                            </div>
                             <div>
                                 <span class="font-bold text-neutral-900 dark:text-white block">{{ $course->title }}</span>
                                 <span class="text-xs text-neutral-400">{{ $course->slug }}</span>
